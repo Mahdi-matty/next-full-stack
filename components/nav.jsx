@@ -21,6 +21,7 @@ export default function Nav(){
             <Link href='/' className='flex gap-2 flex-center'></Link>
             <div className='sm:flex hidden'>
                 {session?.user ? (<div>
+                    <img src={session?.user.image}/>
                     <Link href='/createpost'>create new post</Link>
                     <button onClick={signOut} className='outline_btn'>signOut</button>
                 </div>): (<>
@@ -38,6 +39,7 @@ export default function Nav(){
                 {session?.user ? (<div>
                     <h2>loged in</h2>
                     <img 
+                    src={session?.user.image}
                     onClick={()=>setToggleDropDown((prev)=>!prev)}/>
                     {toggleDropDown && (
                         <div className='dropwdown'>
