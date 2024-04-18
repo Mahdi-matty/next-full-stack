@@ -5,21 +5,22 @@ import {signIn, signOut, useSession, getProviders} from 'next-auth/react'
 import { useEffect, useState } from 'react';
 
 export default function Nav(){
+    const {data: session} = useSession()
     const [providers, setProviders] = useState(null)
     const [toggleDropDown, setToggleDropDown] = useState(false)
     useEffect(()=>{
-        const setProviders = async()=>{
+        const setUpProviders = async()=>{
             const response= await getProviders();
             setProviders(response)
         }
-        setProviders()
+        setUpProviders()
     }, [])
-    const isLoggedIn = true;
+    
     return (
         <nav className='flex-between w-full mb-16 pt-3'>
             <Link href='/' className='flex gap-2 flex-center'></Link>
             <div className='sm:flex hidden'>
-                {isLoggedIn ? (<div>
+                {session?.user ? (<div>
                     <Link href='/createpost'>create new post</Link>
                     <button onClick={signOut} className='outline_btn'>signOut</button>
                 </div>): (<>
@@ -34,13 +35,23 @@ export default function Nav(){
                 </>)}
             </div>
             <div className='sm:hidden flex relative'>
-                {isLoggedIn ? (<div>
+                {session?.user ? (<div>
                     <h2>loged in</h2>
+                    <img 
+                    onClick={()=>setToggleDropDown((prev)=>!prev)}/>
+                    {toggleDropDown && (
+                        <div className='dropwdown'>
+                            <Link
+                            href='/profile'
+                            className='dropdown_link'
+                            onClick={()=>setToggleDropDown(false)} />
+                        </div>
+                    )}
                 </div>): (<>
-                {providers && Object.values(providers).map((provider)=>(
+                    {providers && Object.values(providers).map((provider)=>(
                     <button
                     key={provider.name}
-                    onClick={()=>setToggleDropDown((prev)=>!prev)}
+                    onClick={()=>singIn(provider.id)}
                     className='black_btn'>
 
                     </button>
