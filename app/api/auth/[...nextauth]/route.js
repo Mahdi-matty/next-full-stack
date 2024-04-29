@@ -23,7 +23,7 @@ const handler = NextAuth({
             }
 
             // Return the user object if authentication is successful
-            return { id: user._id.toString(), email: user.email };
+            // return { id: user._id.toString(), email: user.email };
           } catch (error) {
             console.error(error);
             return null;
@@ -38,10 +38,14 @@ const handler = NextAuth({
     })
   ],
   callbacks: {
-    async session({ session }) {
-      if (session.user) {
+    async session({ session, user }) {
+      let sessionUser
+      if (user) {
+        if (user.provider === 'google'){
+          const sessionUser = await User.findOne({ email: session.user.email });
+        }
         // Fetch user data from the database based on session email
-        const sessionUser = await User.findOne({ email: session.user.email });
+        
         session.user.id = sessionUser._id.toString();
       }
       return session;
