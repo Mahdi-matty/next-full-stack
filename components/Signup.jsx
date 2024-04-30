@@ -1,15 +1,16 @@
 'use client'
 
 import { useState } from "react"
-const Login = (props)=>{
+const SignUp = (props)=>{
     const [username, setUserName] = useState('')
+    const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-
 
     const handleFormSubmit = async(e)=>{
         e.preventDefault()
-        props.subHandle({
+        props.subHandl({
             username,
+            email,
             password
         })
     }
@@ -29,13 +30,21 @@ const Login = (props)=>{
             type="text"
             placeholder="username"
           />
+              <label>email</label>
+          <input
+            value={email}
+            name="email"
+            onChange={e=>setEmail(e.target.value)}
+            type="text"
+            placeholder="email"
+          />
           <label>Password</label>
           <input
             value={password}
             name="password"
             onChange={e=> setPassword(e.target.value)}
-            type="text"
-            placeholder="Email"
+            type="password"
+            placeholder="password"
           />
             </form>
         </div>
@@ -43,4 +52,4 @@ const Login = (props)=>{
     )
 };
 
-export default Login
+export default SignUp
