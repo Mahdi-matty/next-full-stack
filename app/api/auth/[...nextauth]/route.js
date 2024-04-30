@@ -9,26 +9,17 @@ const handler = NextAuth({
     CredentialsProvider({
       // Email/Password authentication provider
       credentials: {
-        async authorize(credentials) {
-          try {
-            await connectToDB();
-            const { email, password } = credentials;
-
-            // Find user by email
-            const user = await User.findOne({ email });
-
-            // If user not found or password doesn't match, return null
-            if (!user || !(await user.isCorrectPassword(password))) {
-              return null;
-            }
-
-            // Return the user object if authentication is successful
-            // return { id: user._id.toString(), email: user.email };
-          } catch (error) {
-            console.error(error);
-            return null;
-          }
+          username: { label: "Username", type: "text", placeholder: "jsmith" },
+          password: { label: "Password", type: "password" }       
+      },
+      async authorize(credentials){
+        await connectToDB();
+        const { username, password } = credentials;
+        const user = await User.findOne({ username });
+        if (!user || !(await user.isCorrectPassword(password))) {
+          return null;
         }
+        return user
       }
     }),
     GoogleProvider({
@@ -42,7 +33,7 @@ const handler = NextAuth({
       let sessionUser
       if (user) {
         if (user.provider === 'google'){
-          const sessionUser = await User.findOne({ email: session.user.email });
+           sessionUser = await User.findOne({ email: session.user.email });
         }
         // Fetch user data from the database based on session email
         
