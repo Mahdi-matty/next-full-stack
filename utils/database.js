@@ -11,11 +11,9 @@ export const connectToDB = async () => {
     }
     try {
         await mongoose.connect(process.env.MOONGODB_URI || 'mongodb://127.0.0.1:27017/', {
-            dbName: 'tetsdb',
+            dbName: 'Mahdi',
             useNewUrlParser: true,
-            useCreateIndex: true,
             useUnifiedTopology: true,
-            useFindAndModify: false
         })
         isConnected = true;
         console.log('Connected to the database.')

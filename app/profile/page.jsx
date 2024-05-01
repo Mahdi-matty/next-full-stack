@@ -1,67 +1,27 @@
-'use client'
+    'use client'
 
-import { useState, useEffect } from "react"
-import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
-import Form from "@components/Form"
-import Feed from "@components/Feed"
-import Profile from "@components/Profile"
+    import { useState, useEffect } from "react"
+    import { useSession } from "next-auth/react"
+    import { useRouter } from "next/navigation"
 
-export default function MyProfile() {
-    const router = useRouter()
-    const {data: session} = useSession()
-    const [submitted, setSubmitted] = useState(false)
-    const [myPosts, setMyPosts]= useState([])
-    const [post, setPost] = useState({
-        prompt: '',
-        tag: ''
-    })
+    export default function MyProfile() {
+        const router = useRouter()
+        const {data: session, status} = useSession()
+        const isLoading = status === "loading";
 
-    useEffect(async ()=>{
-        const response = await fetch(`api/users/${session?.user.id}`)
-        const data = await response.json()
-        setMyPosts(data)
-   
-}, [session?.user.id])
-
-    const createPost = async(e)=>{
-        e.preventDefault();
-        setSubmitted(true)
-        try {
-                const response = await fetch('/api/posts/new', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        prompt : post.prompt,
-                        userId: session?.user.id,
-                        tag: post.tag
-                    })
-                })
-                if(response.ok){
-                    router.push('/')
-                }
-        } catch(error){
-            console.error(error)
-        }finally{
-            setSubmitted(false)
+        if (isLoading) {
+            return <div>Loading...</div>;
         }
-    }
+        console.log(session)
+        const userId = session?.user?.id
+        console.log(userId)
+    
 
-    return (
-        <>
-            <div>
-                <Form
-                type= "create"
-                post= {post}
-                setPost = {setPost}
-                submitted= {submitted}
-                handleSubmit= {createPost} />
-            </div>
-            <Feed />
-            <Profile 
-            name='My'
-            data={[myPosts]}
-            handleEdit={handleEdit}
-            handleDelete={handleDelete}/>
-        </>
-    )
-}
+        return (
+            <>
+                <div>
+                    <h3>salam</h3>
+                </div>
+            </>
+        )
+    }

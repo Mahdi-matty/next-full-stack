@@ -1,16 +1,10 @@
 'use client'
 
 import { useState, useEffect } from "react";
-import PostCard from "./Postcard";
-const PostCardlist = ({data, handleTagclick})=>{
+const PostCardlist = ()=>{
     return (
         <div>
-            {data.map((post)=>(
-                <PostCard 
-                key={post._id}
-                post={post}
-                handleTagclick={handleTagclick}/>
-            ))}
+          <h3>login</h3>
         </div>
     )
 }
@@ -38,10 +32,7 @@ export default function Feed(){
                 onChange={(e)=>handleChange(e)}
                 placeholder="search for a tag"/>
             </from>
-            <PostCardlist 
-            data={posts}
-            handleTagclick={()=>{}}
-            />
+            <PostCardlist />
         </section>
         </>
     )

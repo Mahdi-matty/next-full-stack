@@ -1,63 +1,50 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google";
 import User from "@models/user";
 import { connectToDB } from "@utils/database";
-
+import bcrypt from "bcryptjs";
+import GitHub from "next-auth/providers/github";
 const handler = NextAuth({
   providers: [
     CredentialsProvider({
       // Email/Password authentication provider
       credentials: {
-          username: { label: "Username", type: "text", placeholder: "jsmith" },
-          password: { label: "Password", type: "password" }       
+        username: { label: "Username", type: "text", placeholder: "jsmith" },
+        password: { label: "Password", type: "password" }
       },
-      async authorize(credentials){
-        await connectToDB();
-        const { username, password } = credentials;
-        const user = await User.findOne({ username });
-        if (!user || !(await user.isCorrectPassword(password))) {
-          return null;
+      async authorize(credentials) {
+        try {
+          await connectToDB();
+          const user = await User.findOne({ username: credentials.username });
+
+          if (!user) throw new Error("Wrong credentials! no such a user");
+          console.log("Provided password:", credentials.password);
+          console.log("Stored password:", user.password);
+          if (!user || !(await user.isCorrectPassword(credentials.password))) {
+            return null;
+          }
+          return user;
+        } catch (error) {
+          console.log(error)
         }
-        return user
       }
     }),
-    GoogleProvider({
-      // Google OAuth provider
-      clientId: process.env.GOOGLE_ID,
-      clientSecret: process.env.GOOGLE_SECRET
-    })
   ],
   callbacks: {
-    async session({ session, user }) {
-      let sessionUser
-      if (user) {
-        if (user.provider === 'google'){
-           sessionUser = await User.findOne({ email: session.user.email });
+    async session({ session }) {
+      try {
+        const sessionUser = await User.findOne({ email: session?.user?.email });
+        if (sessionUser) {
+          session.user.id = sessionUser._id.toString();
         }
-        // Fetch user data from the database based on session email
-        
-        session.user.id = sessionUser._id.toString();
+      } catch (error) {
+        console.error("Error in session callback:", error);
       }
       return session;
     },
-    async signIn([profile, credentials]) {
+    async signIn(user) {
       try {
         await connectToDB();
-
-        // Check if user exists using Google OAuth
-        const userExist = await User.findOne({ email: profile.email });
-
-        // If user doesn't exist, create a new account
-        if (!userExist) {
-          await User.create({
-            email: profile.email,
-            username: profile.name.replace(" ", "").toLowerCase(),
-            image: profile.picture
-          });
-        }
-
-        // Continue with the sign-in process
         return true;
       } catch (error) {
         console.error(error);
@@ -67,7 +54,5 @@ const handler = NextAuth({
   }
 });
 
-export default handler;
-
-
 export { handler as GET, handler as POST }
+
