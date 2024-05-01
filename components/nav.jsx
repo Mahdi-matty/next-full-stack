@@ -28,37 +28,53 @@ const Nav = () => {
 
   const toggleLogin = () => {
     setShowLoginDev(!showLoginDev);
+    setShowSignUpDev(false)
   };
 
-  const handleSignUp = async (userobj, e) => {
-    e.preventDefault();
-    const user = ({
+  const handleSignUp = async (userobj) => {
+    const userData = {
       username: userobj.username,
       email: userobj.email,
       password: userobj.password
-    })
+    };
+  
     try {
-      const res = await fetch(`api/register`, user);
+      const res = await fetch(`/api/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userData)
+      });
+  
       if (res.ok) {
-        console.log(res.meesage)
+        const data = await res.json();
+        console.log(data.message);
+      }else {
+        // Handle error responses
+        const errorMessage = await res.text();
+        throw new Error(errorMessage);
       }
     } catch (error) {
       console.log(error)
     }
   }
 
-  const handleLogin = async (userObj, e) => {
-    e.preventDefault();
+  const handleLogin = async (userObj) => {
+    console.log('Request Payload:', userObj);
     const result = await signIn('credentials', {
       username: userObj.username,
       password: userObj.password,
       redirect: false
     })
+    console.log('SignIn Result:', result);
     if (result.error) {
       console.log('Authentication failed:', result.error);
     } else {
       console.log('Authentication successful:', result);
       router.push("/profile");
+      setShowLoginDev(false)
+      setShowSignUpDev(false)
     }
   }
 
@@ -72,10 +88,6 @@ const Nav = () => {
       <div className='flex'>
         {session?.user ? (
           <div className='flex gap-3 md:gap-5'>
-            <Link href='/create-prompt' className='black_btn'>
-              Create Post
-            </Link>
-
             <button type='button' onClick={signOut} className='outline_btn'>
               Sign Out
             </button>
@@ -106,7 +118,7 @@ const Nav = () => {
                 <div>
                   <Login subHandle={handleLogin} />
                   <div>
-                    <p>Don't have an account? <button onClick={() => handleClick()}>Signup now!</button></p>
+                    <p>Don't have an account? <button onClick={(e) => handleClick(e)}>Signup now!</button></p>
                   </div>
                 </div>
               )}

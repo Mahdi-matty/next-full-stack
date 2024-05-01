@@ -3,19 +3,12 @@ import User from "@models/user";
 import { connectToDB } from "@utils/database";
 import { NextResponse, NextRequest } from "next/server";
 import bcrypt from 'bcryptjs';
-import validator from 'validator';
 
 export async function POST(request){
     try{
         await connectToDB();
         const {username, email, password} = await request.json();
         const user = await User.findOne({ email });
-        if (!validator.isEmail(email)) {
-            return NextResponse.json(
-                { error: "Invalid email format" },
-                { status: 400 }
-            );
-        }
 
     if (user) {
       return NextResponse.json(
@@ -23,10 +16,10 @@ export async function POST(request){
         { status: 400 }
       );
     }
-    const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
+    // const saltRounds = 10;
+    //     const hashedPassword = await bcrypt.hash(password, saltRounds);
     const newUser = new User({
-        username, email, password: hashedPassword
+        username, email, password: password
     })
     const savedUser = await newUser.save();
     return NextResponse.json({

@@ -17,14 +17,15 @@ const Login = (props)=>{
     return (
         <>
         <div>
-            <button>sign in Google</button>
+            <button className='outline_btn'>sign in Google</button>
         </div>
         <div>
-            <form onSubmit={handleFormSubmit}>
+            <form className="focus-within:underline" onSubmit={handleFormSubmit}>
                 <label>Username</label>
           <input
             value={username}
             name="username"
+            className="ml-2 px-4 py-2 border rounded"
             onChange={e=>setUserName(e.target.value)}
             type="text"
             placeholder="username"
@@ -33,10 +34,13 @@ const Login = (props)=>{
           <input
             value={password}
             name="password"
+            className="ml-2 px-4 py-2 border rounded"
             onChange={e=> setPassword(e.target.value)}
-            type="text"
+            type="password"
             placeholder="Email"
           />
+          <input 
+          type="submit"/>
             </form>
         </div>
         </>

@@ -21,13 +21,14 @@ const SignUp = (props)=>{
             <button>sign in Google</button>
         </div>
         <div>
-            <form onSubmit={handleFormSubmit}>
+            <form className="text-gray-400 focus-within:text-green-600 focus-within:underline" onSubmit={handleFormSubmit}>
                 <label>Username</label>
           <input
             value={username}
             name="username"
             onChange={e=>setUserName(e.target.value)}
             type="text"
+            className="ml-2 px-4 py-2 border rounded"
             placeholder="username"
           />
               <label>email</label>
@@ -35,6 +36,7 @@ const SignUp = (props)=>{
             value={email}
             name="email"
             onChange={e=>setEmail(e.target.value)}
+            className="ml-2 px-4 py-2 border rounded"
             type="text"
             placeholder="email"
           />
@@ -43,9 +45,12 @@ const SignUp = (props)=>{
             value={password}
             name="password"
             onChange={e=> setPassword(e.target.value)}
+            className="ml-2 px-4 py-2 border rounded"
             type="password"
             placeholder="password"
           />
+          <input 
+          type="submit"/>
             </form>
         </div>
         </>

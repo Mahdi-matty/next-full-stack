@@ -504,23 +504,17 @@ video {
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
 }
-.relative{
-  position: relative;
-}
 .mb-16{
   margin-bottom: 4rem;
+}
+.ml-2{
+  margin-left: 0.5rem;
 }
 .mt-10{
   margin-top: 2.5rem;
 }
-.mt-5{
-  margin-top: 1.25rem;
-}
 .flex{
   display: flex;
-}
-.hidden{
-  display: none;
 }
 .w-full{
   width: 100%;
@@ -534,8 +528,22 @@ video {
 .gap-3{
   gap: 0.75rem;
 }
+.rounded{
+  border-radius: 0.25rem;
+}
 .rounded-full{
   border-radius: 9999px;
+}
+.border{
+  border-width: 1px;
+}
+.px-4{
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.py-2{
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 .pt-3{
   padding-top: 0.75rem;
@@ -545,6 +553,10 @@ video {
 }
 .text-center{
   text-align: center;
+}
+.text-gray-400{
+  --tw-text-opacity: 1;
+  color: rgb(156 163 175 / var(--tw-text-opacity));
 }
 
 /* 
@@ -932,26 +944,16 @@ video {
   justify-content: space-between;
 }
 
-@media (min-width: 640px){
+.focus-within\:text-green-600:focus-within{
+  --tw-text-opacity: 1;
+  color: rgb(22 163 74 / var(--tw-text-opacity));
+}
 
-  .sm\:flex{
-    display: flex;
-  }
-
-  .sm\:hidden{
-    display: none;
-  }
+.focus-within\:underline:focus-within{
+  text-decoration-line: underline;
 }
 
 @media (min-width: 768px){
-
-  .md\:flex{
-    display: flex;
-  }
-
-  .md\:hidden{
-    display: none;
-  }
 
   .md\:gap-5{
     gap: 1.25rem;
