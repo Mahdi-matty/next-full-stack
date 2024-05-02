@@ -25,7 +25,11 @@ export const DELETE = async (res, {params})=>{
     try {
         await connectToDb();
         const deletedOrder = await Order.findOneAndDelete({ _id: params.id })
-        return new Response({msg: "deleted successfully"}, { status: 200 })
+        if (deletedOrder) {
+            return new Response({msg: "deleted successfully"}, { status: 200 })
+        } else {
+            return new Response({ msg: 'Order not found' }, { status: 404 })
+        }
     } catch (error) {
         return new Response({ msg: 'internal server error' }, { status: 500 })
     }
