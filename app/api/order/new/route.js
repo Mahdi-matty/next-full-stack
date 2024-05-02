@@ -10,8 +10,7 @@ export const POST = async(req, res)=>{
             productId,                
         })
         await newOrder.save()
-        newOrder.status = newOrder.status;
-        return new Response(JSON.stringify(newProduct), {status: 201})
+        return new Response(JSON.stringify(newOrder), {status: 201})
     }catch(error){
         console.error(error)
     }
