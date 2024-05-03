@@ -12,7 +12,9 @@ export default function MyProfile() {
     const isLoading = status === "loading";
     const [products, setProducts] = useState([])
     const [showCardDev, setShowCardDev] = useState(false)
+    const [reviewComment, setReviewComment] = useState('')
     const [showProfileDev, setShowProfileDev] = useState(true)
+    const [reviews, setReviews] = useState([])
     if (isLoading) {
         return <div>Loading...</div>;
     }
@@ -57,6 +59,39 @@ export default function MyProfile() {
         setShowCardDev(!showCardDev)
         setShowProfileDev(!showProfileDev)
     }
+    const handleAddReview = async(product)=>{
+        const reviewData = {
+            productId: product.id,
+            userId: userId,
+            comment: reviewComment
+
+        }
+        try{
+            const res = await fetch('api/review/new', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(reviewData)
+            })
+            if(res.ok){
+                console.log('review added successfully')
+            }
+
+        }catch(error){
+            console.log(error)
+        }
+    }
+    const renderReviewFunc = async(product)=>{
+        try {
+            const res = await fetch(`api/products/${product.id}/reviews`)
+            if(res.ok){
+                setReviews(res.data)
+            }
+        } catch(error){
+            console.log(error)
+        }
+    }
 
 
     return (
@@ -70,8 +105,25 @@ export default function MyProfile() {
                                 <h3>{product.title}</h3>
                                 <p>{product.content}</p>
                                 <p>{product.price}</p>
+                                {reviews && (
+                                    reviews.map((review)=>(
+                                        <div key={review.id}>
+                                            <p>{review.comment}</p>
+                                        </div>
+                                    ))
+                                )}
                                 <Image src={product.image} />
                                 <button onClick={() => handleAddItem(product)}>Add item</button>
+                                <form onSubmit={handleAddReview}>
+                                    <input 
+                                    type='text'
+                                    value={reviewComment}
+                                    placeholder='add a review'
+                                    onChange={e=>setReviewComment(e.target.value)}/>
+                                    <input 
+                                    type='submit'/>
+                                </form>
+                                {renderReviewFunc(product)}
                             </div>
                         ))
                     )}
