@@ -2,8 +2,8 @@ import '@styles/globals.css'
 import Nav from '@components/nav'
 import Provider from '@components/provider'
 export const metadata = {
-    title: "maktab",
-    description: "online school"
+    title: "dokan",
+    description: "online shop"
 };
 
 
