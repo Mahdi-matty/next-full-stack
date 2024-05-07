@@ -18,6 +18,7 @@ export default function ProductPage() {
     const [reviewComment, setReviewComment] = useState('')
     useEffect(() => {
         const fetchData = async () => {
+            const res= await fetch('api/products')
             if (res.ok) {
                 const data = await res.json();
                 setProduct(data);
