@@ -2,19 +2,15 @@
 
 import { useState, useEffect } from "react"
 import { useAuthContext } from "@utils/AuthProvider"
-
+import ProductForm from "@components/ProductForm"
 export default function AdminPage() {
     const { isLoggedIn, token } = useAuthContext()
     const [username, setUserName] = useState('')
     const [password, setPassword] = useState('')
     const [products, setProducts] = useState([])
-    const [editId, setEditId] = useState(false)
-    const [title, setTtile] = useState('')
-    const [content, setContent] = useState('')
-    const [price, setPrice] = useState('')
-    const [stock, setStock] = useState('');
-    const [formState, setFormState] = useState([])
-    const [imageAddress, setImageAddress] = useState('')
+    const [editProduct, setEditProduct] = useState(null)
+    const [editId, setEditId] = useState(null)
+    conts [showAddForm, setShowAddForm] = useState(false)
 
     const handleFormSubmit = async () => {
         const userObj = {
@@ -55,36 +51,37 @@ export default function AdminPage() {
 
     const handleEditProduct = (product) => {
         setEditId(product.id)
-        setTtile(product.title)
-        setContent(product.content)
-        setPrice(product.price)
-        setStock(product.stock)
+        setEditProduct(product)
     }
-    const editProduct = async (event) => {
-        event.preventDefault();
-        const productId = editId
-        const productObj = {
-            title: title,
-            content: content,
-            image: imageAddress,
-            price: price,
-            stock: stock
+    const handleEditSubmit = (formData) => {
+        const productObj={
+            title: formData.title,
+            content: formData.content,
+            price: formData.price,
+            stock: formData.stock,
+            image: formData.imageAddress,
         }
-        try {
-            const res = await fetch(`/api/products/${productId}`, {
-                method: 'PATCH',
-                body: JSON.stringify(productObj),
-                headers: {
-                    "Content-Type": "application/json"
+        const editProd = async () => {
+            try {
+                const res = await fetch(`api/products/${editId}`, {
+                    method: "PATCH",
+                    body: JSON.stringify(productObj),
+                    headers: {
+                        "Content-Type": "application/json",
+                    }
+                })
+                if(res.ok){
+                    const data = await res.json()
+                    console.log(data)
                 }
-            })
-            if (res.ok) {
-                const data = await res.json()
-                console.log(data)
+                else {
+                    throw new Error('something went wrong')
+                }
+            } catch (error) {
+                console.log(error)
             }
-        } catch (error) {
-            console.log(error)
         }
+        editProd()
     }
     const handleDeleteProduct = async (product) => {
         try {
@@ -100,97 +97,76 @@ export default function AdminPage() {
             console.log(error)
         }
     }
-    const handleImageUpload = (event) => {
-        event.preventDefault();
-        const data = new FormData();
-        data.append('image', fileInput.current.files[0]);
-
-        const postImage = async () => {
+    const handleAddProduct = (event)=>{
+        event.preventDefault()
+        setShowAddForm(!showAddForm)
+    }
+    const handleAddSubmit = (formData) => {
+        const productObj={
+            title: formData.title,
+            content: formData.content,
+            price: formData.price,
+            stock: formData.stock,
+            image: formData.imageAddress,
+        }
+        const addProd = async () => {
             try {
-                const res = await fetch('/api/upload/image-upload', {
-                    mode: 'cors',
-                    method: 'POST',
-                    body: data,
-                });
-                if (!res.ok) throw new Error(res.statusText);
-                const postResponse = await res.json();
-                setFormState({ ...formState, image: postResponse.Location });
-                console.log('postImage: ', postResponse.Location);
-                setImageAddress(postResponse.Location)
-                return postResponse.Location;
+                const res = await fetch(`api/products/new`, {
+                    method: "POST",
+                    body: JSON.stringify(productObj),
+                    headers: {
+                        "Content-Type": "application/json",
+                    }
+                })
+                if(res.ok){
+                    const data = await res.json()
+                    console.log(data)
+                }
+                else {
+                    throw new Error('something went wrong')
+                }
             } catch (error) {
-                console.log(error);
+                console.log(error)
             }
-        };
-        postImage();
-    };
+        }
+        addProd()
+        
+
+
+
+    }
+
     return (
         <>
             {isLoggedIn ? (
-                <div>
-                    {products && (
-                        products.map((product) => (
-                            <div key={product.id}>
-                                <p>{product.title}</p>
-                                <p>{product.content}</p>
-                                <p>{product.price}</p>
-                                <p>{product.stock}</p>
-                                <image src={product.image} />
-                                <button onClick={() => { handleDeleteProduct(product) }}>Delete</button>
-                                <button onClick={() => handleEditProduct(product)}>Edit</button>
-                                {editId === product.id && (
-                                    <div>
-                                        <form onSubmit={editProduct}>
-                                            <input
-                                                name="title"
-                                                id="title"
-                                                value={title}
-                                                onChange={e => setTtile(e.target.value)}
-                                                placeholder="enter title"
-                                                type="text"
-                                                className="questionNewCard" />
-                                            <input
-                                                name="content"
-                                                id="content"
-                                                value={content}
-                                                onChange={e => setContent(e.target.value)}
-                                                placeholder="enter content"
-                                                type="text"
-                                                className="questionNewCard" />
-                                            <input
-                                                name="price"
-                                                id="price"
-                                                value={price}
-                                                onChange={e => setPrice(e.target.value)}
-                                                placeholder="Type a Question"
-                                                type="text"
-                                                className="price" />
-                                            <input
-                                                name="stock"
-                                                id="stock"
-                                                value={stock}
-                                                onChange={e => setStock(e.target.value)}
-                                                placeholder="stock"
-                                                type="text"
-                                                className="questionNewCard" />
-                                            <label className="form-input col-12  p-1">
-                                                Add an image:
-                                                <input type="file" ref={fileInput} className="form-input p-2" />
-                                                <button className="btn" onClick={handleImageUpload} type="submit">
-                                                    Upload
-                                                </button>
-                                            </label>
-                                            <button type="submit">Submit changes</button>
-                                        </form>
-                                    </div>
-                                )}
-                            </div>
-                        ))
+                <>
+                    <div>
+                        {products && (
+                            products.map((product) => (
+                                <div key={product.id}>
+                                    <p>{product.title}</p>
+                                    <p>{product.content}</p>
+                                    <p>{product.price}</p>
+                                    <p>{product.stock}</p>
+                                    <image src={product.image} />
+                                    <button onClick={() => { handleDeleteProduct(product) }}>Delete</button>
+                                    <button onClick={() => handleEditProduct(product)}>Edit</button>
+                                    {editId === product.id && (
+                                        <div>
+                                            <ProductForm handleFormPro={handleEditSubmit} product={editProduct} />
+                                        </div>
+                                    )}
+                                </div>
+                            ))
+                        )}
+                    </div>
+                    <button onClick={handleAddProduct}>Add Product</button>
+                    {showAddForm && (
+                        <div>
+                            <ProductForm handleFormPro={handleAddSubmit} />
+                        </div>
                     )}
-                    
-
-                </div>
-
+                </>
             ) : (
                 <>
                     <div>

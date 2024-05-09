@@ -1,6 +1,7 @@
-import mongoose from "mongoose";
-import Product from "@models/product";
-import { connectToDB } from "@utils/database";
+const mongoose = require('mongoose')
+const {Product, Admin} = require('../models/product')
+const {connectToDB} = require('../utils/database')
+
 
 const seedData = [
     {
@@ -74,11 +75,12 @@ const seedData = [
     },
 ]
 
+
 async function seedMe(){
     try{
         await connectToDB();
-        await Product.insertMany(seedData)
-        console.log('seeding completed')
+        await Product.create()
+       
     }catch(error){
         console.log(error)
     }finally {

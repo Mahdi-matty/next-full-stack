@@ -51,7 +51,11 @@ const handler = NextAuth({
         return false;
       }
     }
-  }
+  },
+  session: {
+    // Set session maxAge to 2 hours (in seconds)
+    maxAge: 2 * 60 * 60, // 2 hours
+  },
 });
 
 export { handler as GET, handler as POST }
