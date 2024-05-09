@@ -7,11 +7,16 @@ const Home = () => {
     const { data: session, status } = useSession()
     const userId = session?.user?.id
     const [products, setProducts] = useState([])
+    let availableProducts
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetcher('api/products')
-                setProducts(response.data)
+                const response = await fetch('/api/products')
+                if(response.ok){
+                  setProducts(response.data)  
+                  availableProducts = products.filter(product => product.status === 'available');
+                }
+                
             } catch (error) {
                 console.log(error)
             }
@@ -20,7 +25,6 @@ const Home = () => {
         fetchData();
 
     }, [])
-    const availableProducts = products.filter(product => product.status === 'available');
     const handleAddItem = async (e, product) => {
         const orderData = {
             userId: userId,

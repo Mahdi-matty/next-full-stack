@@ -8,6 +8,7 @@ import Login from './Login';
 import SignUp from './Signup';
 const Nav = () => {
   const { data: session } = useSession();
+  console.log(session)
   const [showLoginDev, setShowLoginDev] = useState(false)
   const [showSignUpDev, setShowSignUpDev] = useState(false)
   const [providers, setProviders] = useState(null);
@@ -93,13 +94,13 @@ const Nav = () => {
             </button>
 
             <Link href='/cart'>
-              <Image
+              {/* <Image
                 src={session?.user.image}
                 width={37}
                 height={37}
                 className='rounded-full'
                 alt='cart'
-              />
+              /> */}
             </Link>
           </div>
         ) : (
