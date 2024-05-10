@@ -1,18 +1,57 @@
 'use client'
 
 import { useState, useEffect } from "react"
-import { useAuthContext } from "@utils/AuthProvider"
+import Image from "next/image";
 import ProductForm from "@components/ProductForm"
 export default function AdminPage() {
-    const { isLoggedIn, token } = useAuthContext()
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [username, setUserName] = useState('')
     const [password, setPassword] = useState('')
     const [products, setProducts] = useState([])
     const [editProduct, setEditProduct] = useState(null)
     const [editId, setEditId] = useState(null)
-    conts [showAddForm, setShowAddForm] = useState(false)
+    const [showAddForm, setShowAddForm] = useState(false)
+    const [token, setToken] = useState(null)
+    useEffect(() => {
+        // if (typeof window !== 'undefined') {
+        const fetchdata = async () => {
+            const initialToken = localStorage.getItem('initialToken');
+            if (initialToken) {
+                setToken(initialToken);
+                console.log(token)
+            }
+        }
+        fetchdata()
+    }, []);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await fetch('/api/admin/token', {
+                    method: "GET",
+                    headers: {
+                        "Content-Type":"application/json",
+                        "Authorization": `Bearer ${token}`
+                    }
+                })
+                if (res.ok) {
+                    const data = await res.json()
+                    console.log(data)
+                    setIsLoggedIn(true)
+                } else {
+                    localStorage.removeItem('initialToken')
+                    console.log('something went wrong')
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        if (token) {
+            fetchData()
+        }
+    }, [token])
 
-    const handleFormSubmit = async () => {
+    const handleFormSubmit = async (event) => {
+        event.preventDefault()
         const userObj = {
             username: username,
             password: password
@@ -27,6 +66,9 @@ export default function AdminPage() {
             })
             if (res.ok) {
                 const data = await res.json()
+                console.log(data.token)
+                localStorage.setItem('initialToken', data.token)
+                setIsLoggedIn(true)
             }
 
 
@@ -37,8 +79,9 @@ export default function AdminPage() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetcher('api/products')
-                setProducts(response.data)
+                const response = await fetch('/api/products')
+                const data = await response.json()
+                setProducts(data)
             } catch (error) {
                 console.log(error)
             }
@@ -54,12 +97,13 @@ export default function AdminPage() {
         setEditProduct(product)
     }
     const handleEditSubmit = (formData) => {
-        const productObj={
+        const productObj = {
             title: formData.title,
             content: formData.content,
             price: formData.price,
             stock: formData.stock,
             image: formData.imageAddress,
+            category: formData.category
         }
         const editProd = async () => {
             try {
@@ -70,7 +114,7 @@ export default function AdminPage() {
                         "Content-Type": "application/json",
                     }
                 })
-                if(res.ok){
+                if (res.ok) {
                     const data = await res.json()
                     console.log(data)
                 }
@@ -97,17 +141,18 @@ export default function AdminPage() {
             console.log(error)
         }
     }
-    const handleAddProduct = (event)=>{
+    const handleAddProduct = (event) => {
         event.preventDefault()
         setShowAddForm(!showAddForm)
     }
     const handleAddSubmit = (formData) => {
-        const productObj={
+        const productObj = {
             title: formData.title,
             content: formData.content,
             price: formData.price,
             stock: formData.stock,
             image: formData.imageAddress,
+            category: formData.category
         }
         const addProd = async () => {
             try {
@@ -118,7 +163,7 @@ export default function AdminPage() {
                         "Content-Type": "application/json",
                     }
                 })
-                if(res.ok){
+                if (res.ok) {
                     const data = await res.json()
                     console.log(data)
                 }
@@ -130,9 +175,6 @@ export default function AdminPage() {
             }
         }
         addProd()
-        
-
-
 
     }
 
@@ -143,12 +185,12 @@ export default function AdminPage() {
                     <div>
                         {products && (
                             products.map((product) => (
-                                <div key={product.id}>
+                                <div key={product._id}>
                                     <p>{product.title}</p>
                                     <p>{product.content}</p>
                                     <p>{product.price}</p>
                                     <p>{product.stock}</p>
-                                    <image src={product.image} />
+                                    <Image src={product.image} alt="image" />
                                     <button onClick={() => { handleDeleteProduct(product) }}>Delete</button>
                                     <button onClick={() => handleEditProduct(product)}>Edit</button>
                                     {editId === product.id && (
@@ -187,7 +229,7 @@ export default function AdminPage() {
                                 className="ml-2 px-4 py-2 border rounded"
                                 onChange={e => setPassword(e.target.value)}
                                 type="password"
-                                placeholder="Email"
+                                placeholder="password"
                             />
                             <input
                                 type="submit" />

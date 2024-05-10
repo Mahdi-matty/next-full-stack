@@ -1,10 +1,10 @@
-import {connectToDb} from '@utils/database'
+import {connectToDB} from '@utils/database'
 import Posts from '@models/posts'
 
 export const POST = async(req, res)=>{
     const {prompt, userId, tag} = await req.json()
     try{
-        await connectToDb()
+        await connectToDB()
         const newPost = new Posts({
             creator: userId,
             tag,

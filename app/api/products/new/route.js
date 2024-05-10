@@ -1,16 +1,22 @@
-import {connectToDb} from '@utils/database'
+import {connectToDB} from '@utils/database'
 import Product from '@models/product'
+import Category from '@models/category'
 
 export const POST = async(req, res)=>{
-    const {title, content, stock, image, category} = await req.json()
+    const {title, content, stock, image, category} =  req.json();
+    const categoryName = await Category.findOne({category})
+    if(!categoryName){
+        throw new Error('no such a category')
+    }
+    const categoryId = categoryName._id
     try{
-        await connectToDb()
+        await connectToDB()
         const newProduct = new Product({
             content,
             stock,
             title, 
             image,
-            category
+            category: categoryId
         })
         await newProduct.save()
         newProduct.status = newProduct.status;

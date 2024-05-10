@@ -1,10 +1,10 @@
-import {connectToDb} from '@utils/database'
+import {connectToDB} from '@utils/database'
 import Order from '@models/order'
 
 export const POST = async(req, res)=>{
     const {productId, userId,} = await req.json()
     try{
-        await connectToDb()
+        await connectToDB()
         const newOrder = new Order({
             userId,
             productId,                
