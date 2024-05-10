@@ -1,10 +1,10 @@
-import {connectToDb} from '@utils/database'
+import {connectToDB} from '@utils/database'
 import User from '@models/user'
 
 export const POST = async(req, res)=>{
     const {username, email, password, image} = await req.json()
     try{
-        await connectToDb()
+        await connectToDB()
         const newUser = new User({
             username,
             email,

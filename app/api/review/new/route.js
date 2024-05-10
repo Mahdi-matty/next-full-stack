@@ -1,10 +1,10 @@
-import {connectToDb} from '@utils/database'
+import {connectToDB} from '@utils/database'
 import Review from '@models/review'
 
 export const POST = async(req, res)=>{
     const {comment, productId, userId} = await req.json()
     try{
-        await connectToDb()
+        await connectToDB()
         const newReview = new Review({
             productId,
             userId,

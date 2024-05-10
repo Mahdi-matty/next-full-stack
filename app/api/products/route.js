@@ -1,9 +1,9 @@
-import {connectToDb} from '@utils/database'
+import {connectToDB} from '@utils/database'
 import Product from '@models/product'
 
 export const GET = async(req, res)=>{
     try{
-        await connectToDb();
+        await connectToDB();
         const allProduct = await Product.find({}).populate('category')
         const productsWithStatus = allProduct.map(product => {
             return {

@@ -1,9 +1,9 @@
-import { connectToDb } from '@utils/database'
+import { connectToDB } from '@utils/database'
 import Review from '@models/review';
 
 export const GET = async (req, { params }) => {
     try {
-        await connectToDb();
+        await connectToDB();
         const reviw = await Review.findById(params.id)
         return new Response(JSON.stringify(reviw), { status: 200 })
     } catch (error) {
@@ -13,7 +13,7 @@ export const GET = async (req, { params }) => {
 
 export const PATCH = async (req, { params }) => {
     try {
-        await connectToDb();
+        await connectToDB();
         const updatedReview = await Review.findOneAndUpdate({ _id: params.id })
         return new Response(JSON.stringify(updatedReview), { status: 200 })
     } catch (error) {
@@ -23,7 +23,7 @@ export const PATCH = async (req, { params }) => {
 
 export const DELETE = async (res, {params})=>{
     try {
-        await connectToDb();
+        await connectToDB();
         const deletedReview = await Review.findOneAndDelete({ _id: params.id })
         return new Response({msg: "deleted successfully"}, { status: 200 })
     } catch (error) {

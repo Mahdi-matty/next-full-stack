@@ -1,10 +1,10 @@
-import {connectToDb} from '@utils/database'
+import {connectToDB} from '@utils/database'
 import Notification from '@models/notification'
 
 export const POST = async(req, res)=>{
     const {message, userId, status} = await req.json()
     try{
-        await connectToDb()
+        await connectToDB()
         const newNote = new Notification({
             userId,
             status,

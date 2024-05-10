@@ -1,9 +1,9 @@
-import { connectToDb } from '@utils/database'
+import { connectToDB } from '@utils/database'
 import Notification from '@models/notification';
 
 export const GET = async (req, { params }) => {
     try {
-        await connectToDb();
+        await connectToDB();
         const note = await Notification.findById(params.id)
         return new Response(JSON.stringify(note), { status: 200 })
     } catch (error) {
@@ -13,7 +13,7 @@ export const GET = async (req, { params }) => {
 
 export const DELETE = async (res, {params})=>{
     try {
-        await connectToDb();
+        await connectToDB();
         const deletedNote = await Notification.findOneAndDelete({ _id: params.id })
         return new Response({msg: "deleted successfully"}, { status: 200 })
     } catch (error) {

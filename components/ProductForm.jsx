@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 export default function ProductForm({ handleFormPro, product }) {
     const [title, setTtile] = useState('')
     const [content, setContent] = useState('')
     const [price, setPrice] = useState('')
+    const [category, setCategory]= useState('')
     const [stock, setStock] = useState('');
     const [formState, setFormState] = useState([])
     const [imageAddress, setImageAddress] = useState('')
+    const fileInput = useRef(null);
 
     useEffect(()=>{
         if(product){
@@ -14,12 +16,13 @@ export default function ProductForm({ handleFormPro, product }) {
             setPrice(product.price)
             setStock(product.stock)
             setImageAddress(product.image)
+            setCategory(product.category)
         }
     })
 
         const handleProduct = (e) => {
             e.preventDefault();
-            handleFormPro({ title, content, price, stock, imageAddress })
+            handleFormPro({ title, content, price, stock, imageAddress, category })
 
         }
 
@@ -74,7 +77,7 @@ export default function ProductForm({ handleFormPro, product }) {
                         id="price"
                         value={price}
                         onChange={e => setPrice(e.target.value)}
-                        placeholder="Type a Question"
+                        placeholder="price"
                         type="text"
                         className="price" />
                     <input
@@ -85,6 +88,14 @@ export default function ProductForm({ handleFormPro, product }) {
                         placeholder="stock"
                         type="text"
                         className="questionNewCard" />
+                         <input
+                        name="category"
+                        id="category"
+                        value={category}
+                        onChange={e => setCategory(e.target.value)}
+                        placeholder="category"
+                        type="text"
+                        className="category" />
                     <label className="form-input col-12  p-1">
                         Add an image:
                         <input type="file" ref={fileInput} className="form-input p-2" />

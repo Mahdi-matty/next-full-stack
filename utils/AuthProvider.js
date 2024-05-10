@@ -1,5 +1,6 @@
+'use client'
+
 import { createContext, useState, useEffect, useContext } from "react";
-import { useState, useEffect } from "react";
 export const AuthContext = createContext();
 
 export const useAuthContext = () => useContext(AuthContext)
@@ -7,7 +8,6 @@ export const useAuthContext = () => useContext(AuthContext)
 export default function AuthProvider({ children, initialToken }) {
     const [token, setToken] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-
 
     useEffect(() => {
         const fetchData = async () => {
@@ -20,8 +20,11 @@ export default function AuthProvider({ children, initialToken }) {
                 })
                 if (res.ok) {
                     const data = await res.json()
+                    console.log(data)
                     setToken(initialToken)
                     setIsLoggedIn(true)
+                }else{
+                    localStorage.removeItem('initialToken')
                 }
             } catch (error) {
                 console.log(error)
