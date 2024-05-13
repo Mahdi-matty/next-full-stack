@@ -74,7 +74,7 @@ export default function Notification(){
                     notifications.map((note)=>{
                         <div key={note.id}>
                             <p>{note.message}</p>
-                            <button onClick={()=>handleDelete(note)}>Delete</button>
+                            <button className="bg-yellow-300 w-40 h-10 rounded-3xl m-4" onClick={()=>handleDelete(note)}>Delete</button>
                         </div>
                     })
                 )}

@@ -4,26 +4,20 @@ import { useSession } from "next-auth/react"
 import Image from "next/image"
 import Link from 'next/link';
 const Home = () => {
-    const { data: session, status } = useSession()
+    const { data: session } = useSession()
     const userId = session?.user?.id
     const [products, setProducts] = useState([])
-    let availableProducts
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await fetch('/api/products')
-                if(response.ok){
-                  setProducts(response.data)  
-                  availableProducts = products.filter(product => product.status === 'available');
-                }
-                
+                const data = await response.json()
+                  setProducts(data)   
             } catch (error) {
                 console.log(error)
             }
         }
-
         fetchData();
-
     }, [])
     const handleAddItem = async (e, product) => {
         const orderData = {
@@ -48,20 +42,18 @@ const Home = () => {
     }
     return (
         <>
-            {availableProducts && (
-                availableProducts.map((product) => (
-                    <div key={product.id}>
-                        <Link href={`/products/${product.id}`}>
-                            <a>
-                                <h3>{product.title}</h3>
-                            </a>
+            {products && (
+                products.map((product) => (
+                    <div className="flex flex-wrap bg-teal-100 border-solid m-5 p-5" key={product.id}>
+                        <Link href={`/product/${product._id}`}>
+                                <h3 className="m-2 text-blue-600">{product.title}</h3>
                         </Link>
-                        <p>{product.content}</p>
-                        <p>{product.price}</p>
+                        <p className="m-2" >{product.content}</p>
+                        <p className="m-2" >{product.price}</p>
                         <Image src={product.image} />
                         {session ?.user && (
                             <div>
-                                <button onClick={() => handleAddItem(product)}>Add item</button>
+                                <button className="bg-yellow-300 w-40 h-10 rounded-3xl m-4" onClick={() => handleAddItem(product)}>Add item</button>
                             </div>
                         )}
                     </div>

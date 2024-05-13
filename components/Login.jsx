@@ -17,7 +17,7 @@ const Login = (props)=>{
     return (
         <>
         <div>
-            <button className='outline_btn'>sign in Google</button>
+            <button className='bg-yellow-300 w-40 h-10 rounded-3xl m-4'>sign in Google</button>
         </div>
         <div>
             <form className="focus-within:underline" onSubmit={handleFormSubmit}>

@@ -2,16 +2,20 @@ import  {Schema, model, models} from 'mongoose'
 
 const ProductSchema = new Schema({
  title: {
-    type: String
+    type: String,
+    required: true
  },
  content: {
-    type: String
+    type: String,
+    required: true
  },
  price: {
-    type: Number
+    type: Number,
+    required: true
  },
  stock: {
-    type: Number
+    type: Number,
+    required: true
  },
  image: {
     type: String
