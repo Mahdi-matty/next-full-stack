@@ -3,7 +3,8 @@ import Product from '@models/product'
 import Category from '@models/Category';
 
 export const POST = async(req, res)=>{
-    const {title, content, stock, image, category} =  req.body;
+    const {title, content, stock,price, image, category} =  await req.json();
+    console.log({title, content, price, stock})
     const categoryName = await Category.findOne({category})
     if(!categoryName){
         throw new Error('no such a category')
@@ -14,9 +15,10 @@ export const POST = async(req, res)=>{
         const newProduct = new Product({
             content: content,
             stock: stock,
+            price: price,
+            category: categoryName,
             title: title,
             image: image,
-            category: categoryName
         })
         await newProduct.save()
         // newProduct.status = newProduct.status;

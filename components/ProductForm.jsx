@@ -32,7 +32,7 @@ export default function ProductForm({ handleFormPro, product }) {
             data.append('image', fileInput.current.files[0]);
             const postImage = async () => {
                 try {
-                    const res = await fetch('/api/upload/image-upload', {
+                    const res = await fetch('/api/upload', {
                         mode: 'cors',
                         method: 'POST',
                         body: data,
@@ -55,15 +55,15 @@ export default function ProductForm({ handleFormPro, product }) {
     return (
         <>
             <div>
-                <form onSubmit={handleProduct}>
+                <form className="flex-col" onSubmit={handleProduct}>
                     <input
                         name="title"
+                        className="border-blue-50 border-4 p-2 my-4 w-20"
                         id="title"
                         value={title}
                         onChange={e => setTtile(e.target.value)}
                         placeholder="enter title"
-                        type="text"
-                        className="questionNewCard" />
+                        type="text" />
                     <input
                         name="content"
                         id="content"
@@ -71,7 +71,7 @@ export default function ProductForm({ handleFormPro, product }) {
                         onChange={e => setContent(e.target.value)}
                         placeholder="enter content"
                         type="text"
-                        className="questionNewCard" />
+                        className="border-blue-50 border-4 p-2 my-4 w-20" />
                     <input
                         name="price"
                         id="price"
@@ -79,7 +79,7 @@ export default function ProductForm({ handleFormPro, product }) {
                         onChange={e => setPrice(e.target.value)}
                         placeholder="price"
                         type="text"
-                        className="price" />
+                        className="border-blue-50 border-4 p-2 my-4 w-20" />
                     <input
                         name="stock"
                         id="stock"
@@ -87,7 +87,7 @@ export default function ProductForm({ handleFormPro, product }) {
                         onChange={e => setStock(e.target.value)}
                         placeholder="stock"
                         type="text"
-                        className="questionNewCard" />
+                        className="border-blue-50 border-4 p-2 my-4 w-20" />
                          <input
                         name="category"
                         id="category"
@@ -95,11 +95,11 @@ export default function ProductForm({ handleFormPro, product }) {
                         onChange={e => setCategory(e.target.value)}
                         placeholder="category"
                         type="text"
-                        className="category" />
+                        className="border-blue-50 border-4 p-2 my-4 w-20" />
                     <label className="form-input col-12  p-1">
                         Add an image:
                         <input type="file" ref={fileInput} className="form-input p-2" />
-                        <button className="btn" onClick={handleImageUpload} type="submit">
+                        <button className="bg-yellow-300 w-40 h-10 rounded-3xl m-4" onClick={handleImageUpload} type="submit">
                             Upload
                         </button>
                     </label>

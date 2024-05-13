@@ -4,7 +4,7 @@ import Product from '@models/product'
 export const GET = async(req, res)=>{
     try{
         await connectToDB();
-        const allProduct = await Product.find({}).populate('category')
+        const allProduct = await Product.find({})
         const productsWithStatus = allProduct.map(product => {
             return {
                 ...product.toJSON(),

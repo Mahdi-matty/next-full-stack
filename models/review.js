@@ -2,7 +2,7 @@ import { Schema, model, models } from 'mongoose'
 
 const ReviewSchema = new Schema({
     comment: {
-        type: String,
+        type: Schema.Types.Mixed,
        
     },
     product: {

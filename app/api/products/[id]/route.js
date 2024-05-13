@@ -5,12 +5,12 @@ export const GET = async (req, { params }) => {
     try {
         await connectToDB();
         const prodict = await Product.findById(params.id)
-        const productsWithStatus = {
-            ...prodict.toJSON(),
-            status: prodict.status
-        }
+        // const productsWithStatus = {
+        //     ...prodict.toJSON(),
+        //     status: prodict.status
+        // }
 
-        return new Response(JSON.stringify(productsWithStatus), { status: 200 })
+        return new Response(JSON.stringify(prodict), { status: 200 })
     } catch (error) {
         console.log(error)
     }

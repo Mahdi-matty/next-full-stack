@@ -160,9 +160,6 @@ export default function AdminPage() {
                 const res = await fetch(`api/products/new`, {
                     method: "POST",
                     body: JSON.stringify(productObj),
-                    headers: {
-                        "Content-Type": "application/json",
-                    }
                 })
                 if (res.ok) {
                     const data = await res.json()
@@ -209,15 +206,16 @@ export default function AdminPage() {
                         <form onSubmit={handleCategorySubmit}>
                             <input type="text"
                                 placeholder="name"
+                                className="border-blue-50 border-4 p-2 my-4 w-20"
                                 value={name}
                                 onChange={e => setName(e.target.value)} />
                             <input type="submit" />
                         </form>
                     </div>
-                    <div>
+                    <div className="flex flex-wrap">
                         {products && (
                             products.map((product) => (
-                                <div className="bg-teal-100 border-solid" key={product._id}>
+                                <div className=" flex-1 bg-teal-100 border-solid m-5 p-5" key={product._id}>
                                     <p>{product.title}</p>
                                     <p>{product.content}</p>
                                     <p>{product.price}</p>
@@ -228,8 +226,8 @@ export default function AdminPage() {
                                         </div>
                                     )}
 
-                                    <button onClick={() => { handleDeleteProduct(product) }}>Delete</button>
-                                    <button onClick={() => handleEditProduct(product)}>Edit</button>
+                                    <button className="bg-yellow-300 w-20 h-10 rounded-3xl m-4" onClick={() => { handleDeleteProduct(product) }}>Delete</button>
+                                    <button className="bg-yellow-300 w-20 h-10 rounded-3xl m-4" onClick={() => handleEditProduct(product)}>Edit</button>
                                     {editId === product.id && (
                                         <div>
                                             <ProductForm handleFormPro={handleEditSubmit} product={editProduct} />

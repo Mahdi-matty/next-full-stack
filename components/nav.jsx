@@ -73,7 +73,6 @@ const Nav = () => {
       console.log('Authentication failed:', result.error);
     } else {
       console.log('Authentication successful:', result);
-      router.push("/profile");
       setShowLoginDev(false)
       setShowSignUpDev(false)
     }
@@ -89,7 +88,7 @@ const Nav = () => {
       <div className='flex'>
         {session?.user ? (
           <div className='flex gap-3 md:gap-5'>
-            <button type='button' onClick={signOut} className='outline_btn'>
+            <button type='button' onClick={signOut} className='bg-yellow-300 w-40 h-10 rounded-3xl m-4'>
               Sign Out
             </button>
 
@@ -119,7 +118,7 @@ const Nav = () => {
                 <div>
                   <Login subHandle={handleLogin} />
                   <div>
-                    <p>Don't have an account? <button onClick={(e) => handleClick(e)}>Signup now!</button></p>
+                    <p>Don't have an account? <button className='bg-yellow-300 w-40 h-10 rounded-3xl m-4' onClick={(e) => handleClick(e)}>Signup now!</button></p>
                   </div>
                 </div>
               )}
