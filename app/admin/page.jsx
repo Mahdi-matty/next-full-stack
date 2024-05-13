@@ -12,6 +12,7 @@ export default function AdminPage() {
     const [editId, setEditId] = useState(null)
     const [showAddForm, setShowAddForm] = useState(false)
     const [token, setToken] = useState(null)
+    const [name, setName] = useState('')
     useEffect(() => {
         // if (typeof window !== 'undefined') {
         const fetchdata = async () => {
@@ -29,7 +30,7 @@ export default function AdminPage() {
                 const res = await fetch('/api/admin/token', {
                     method: "GET",
                     headers: {
-                        "Content-Type":"application/json",
+                        "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`
                     }
                 })
@@ -177,20 +178,56 @@ export default function AdminPage() {
         addProd()
 
     }
+    const handleCategorySubmit = async (event) => {
+        event.preventDefault()
+        const catObj = {
+            name: name
+        }
+        try {
+            const res = await fetch('api/categories/new', {
+                method: 'POST',
+                body: JSON.stringify(catObj),
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            }
+            )
+            if (!res.ok) {
+                console.log(res.Response)
+            }
+            setName('')
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <>
             {isLoggedIn ? (
                 <>
                     <div>
+                        <form onSubmit={handleCategorySubmit}>
+                            <input type="text"
+                                placeholder="name"
+                                value={name}
+                                onChange={e => setName(e.target.value)} />
+                            <input type="submit" />
+                        </form>
+                    </div>
+                    <div>
                         {products && (
                             products.map((product) => (
-                                <div key={product._id}>
+                                <div className="bg-teal-100 border-solid" key={product._id}>
                                     <p>{product.title}</p>
                                     <p>{product.content}</p>
                                     <p>{product.price}</p>
                                     <p>{product.stock}</p>
-                                    <Image src={product.image} alt="image" />
+                                    {product.image && (
+                                        <div>
+                                            <Image src={product.image} alt="image" />
+                                        </div>
+                                    )}
+
                                     <button onClick={() => { handleDeleteProduct(product) }}>Delete</button>
                                     <button onClick={() => handleEditProduct(product)}>Edit</button>
                                     {editId === product.id && (

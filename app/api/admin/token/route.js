@@ -3,7 +3,7 @@ import { connectToDB } from "@utils/database"
 const jwt = require('jsonwebtoken')
 
 export const GET = async (req, res) => {
-    console.log(req.headers)
+    // console.log(req.headers)
     const token = req.headers.authorization?.split(" ")[1]
     if(!token){
         const tokenerr = JSON.stringify('invalid token')
