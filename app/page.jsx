@@ -19,14 +19,15 @@ const Home = () => {
         }
         fetchData();
     }, [])
-    const handleAddItem = async (e, product) => {
+    const handleAddItem = async (event, product) => {
         const orderData = {
-            userId: userId,
-            productId: product.id
+            productId: product._id,
+            productName: product.title,
+            price: product.price
         }
-        e.preventDefault();
+        event.preventDefault();
         try {
-            const response = await fetch('api/order/new', {
+            const response = await fetch(`/api/order/new/${userId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -44,16 +45,16 @@ const Home = () => {
         <>
             {products && (
                 products.map((product) => (
-                    <div className="flex flex-wrap bg-teal-100 border-solid m-5 p-5" key={product.id}>
+                    <div className="flex flex-wrap bg-teal-100 border-solid m-5 p-5" key={product._id}>
                         <Link href={`/product/${product._id}`}>
                                 <h3 className="m-2 text-blue-600">{product.title}</h3>
                         </Link>
                         <p className="m-2" >{product.content}</p>
                         <p className="m-2" >{product.price}</p>
-                        <Image src={product.image} />
+                        <Image src={product.image} alt="image"/>
                         {session ?.user && (
                             <div>
-                                <button className="bg-yellow-300 w-40 h-10 rounded-3xl m-4" onClick={() => handleAddItem(product)}>Add item</button>
+                                <button className="bg-yellow-300 w-40 h-10 rounded-3xl m-4" onClick={(event) => handleAddItem(event, product)}>Add item</button>
                             </div>
                         )}
                     </div>

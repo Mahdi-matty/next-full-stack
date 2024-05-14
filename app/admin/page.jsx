@@ -94,7 +94,8 @@ export default function AdminPage() {
     }, [isLoggedIn])
 
     const handleEditProduct = (product) => {
-        setEditId(product.id)
+        console.log(product)
+        setEditId(product._id)
         setEditProduct(product)
     }
     const handleEditSubmit = (formData) => {
@@ -215,7 +216,7 @@ export default function AdminPage() {
                     <div className="flex flex-wrap">
                         {products && (
                             products.map((product) => (
-                                <div className=" flex-1 bg-teal-100 border-solid m-5 p-5" key={product._id}>
+                                <div className=" flex-1 bg-teal-100 border-solid m-5 p-5" key={product.id}>
                                     <p>{product.title}</p>
                                     <p>{product.content}</p>
                                     <p>{product.price}</p>
@@ -228,7 +229,7 @@ export default function AdminPage() {
 
                                     <button className="bg-yellow-300 w-20 h-10 rounded-3xl m-4" onClick={() => { handleDeleteProduct(product) }}>Delete</button>
                                     <button className="bg-yellow-300 w-20 h-10 rounded-3xl m-4" onClick={() => handleEditProduct(product)}>Edit</button>
-                                    {editId === product.id && (
+                                    {editId === product._id && (
                                         <div>
                                             <ProductForm handleFormPro={handleEditSubmit} product={editProduct} />
                                         </div>

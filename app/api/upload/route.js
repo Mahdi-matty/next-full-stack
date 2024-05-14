@@ -1,40 +1,48 @@
-import multer from 'multer';
-import multerS3 from 'multer-s3';
-import { v4 as uuidv4 } from 'uuid';
-import AWS from 'aws-sdk';
+import { NextResponse } from "next/server";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
-const s3 = new AWS.S3({
-  apiVersion: '2006-03-01',
+const s3Client = new S3Client({
+	region: process.env.AWS_S3_REGION,
+	credentials: {
+		accessKeyId: process.env.ACCESS_KEY,
+		secretAccessKey: process.env.SECRET_ACCESS_KEY,
+	}
 });
 
-const upload = multer({
-  storage: multerS3({
-    s3: s3,
-    bucket: 'user-images-669af664-23f0-47fd-bd77-2745b6a066b7', // Replace with your S3 bucket name
-    acl: 'private', // Set ACL to public-read for public access
-    contentType: multerS3.AUTO_CONTENT_TYPE,
-    key: function (req, file, cb) {
-      cb(null, uuidv4()); // Generate a unique key for each file uploaded
-    },
-  }),
-}).single('image');
+async function uploadFileToS3(file, fileName) {
 
-export default async function handler(req, res) {
-  if (req.method === 'POST') {
-    try {
-      upload(req, res, (err) => {
-        if (err) {
-          console.error('Error uploading file:', err);
-          return res.status(500).json({ error: 'Failed to upload file to S3' });
-        }
-        res.status(200).json({ message: 'File uploaded successfully', imageUrl: req.file.location });
-      });
-    } catch (error) {
-      console.error('Error uploading file:', error);
-      res.status(500).json({ error: 'Failed to upload file to S3' });
-    }
-  } else {
-    res.setHeader('Allow', ['POST']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
+	const fileBuffer = file;
+	console.log(fileName);
+
+	const params = {
+		Bucket: process.env.AWS_S3_BUCKET_NAME,
+		Key: `${fileName}`,
+		Body: fileBuffer,
+		ContentType: "image/jpg"
+	}
+
+	const command = new PutObjectCommand(params);
+	// const command = new ListBucketsCommand(params);
+	const response = await s3Client.send(command);
+	return fileName;
+	// await s3Client.send(command);
+	// return fileName;
+}
+
+export async function POST(request) {
+	try {
+
+		const formData = await request.formData();
+		const file = formData.get("file");
+
+		if(!file) {
+			return NextResponse.json( { error: "File is required."}, { status: 400 } );
+		} 
+
+		const buffer = Buffer.from(await file.arrayBuffer());
+		const location = await uploadFileToS3(buffer, file.name);
+		return NextResponse.json({ success: true, location});
+	} catch (error) {
+		return NextResponse.json({ error });
+	}
 }

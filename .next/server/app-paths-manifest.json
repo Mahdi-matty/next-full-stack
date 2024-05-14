@@ -1,8 +1,6 @@
 {
   "/page": "app/page.js",
-  "/admin/page": "app/admin/page.js",
-  "/product/[id]/page": "app/product/[id]/page.js",
+  "/cart/page": "app/cart/page.js",
   "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/api/products/[id]/route": "app/api/products/[id]/route.js",
-  "/api/products/[id]/reviews/route": "app/api/products/[id]/reviews/route.js"
+  "/api/users/[id]/orders/route": "app/api/users/[id]/orders/route.js"
 }

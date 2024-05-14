@@ -1,5 +1,6 @@
 import { Schema, model, models } from "mongoose";
 import bcrypt from 'bcryptjs'
+import Order from './order'
 
 const userSchema = new Schema({
     email: {
@@ -19,7 +20,8 @@ const userSchema = new Schema({
     },
     image: {
         type: String
-    }
+    },
+    orders: [Order.schema]
 })
 userSchema.pre('save', async function(next) {
     if (this.isNew || this.isModified('password')) {
