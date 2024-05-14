@@ -92,14 +92,8 @@ const Nav = () => {
               Sign Out
             </button>
 
-            <Link href='/cart'>
-              {/* <Image
-                src={session?.user.image}
-                width={37}
-                height={37}
-                className='rounded-full'
-                alt='cart'
-              /> */}
+            <Link className='bg-yellow-300 w-40 h-10 rounded-3xl m-4' href='/cart'>
+              <p className='pl-10'>Cart</p>
             </Link>
           </div>
         ) : (

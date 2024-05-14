@@ -3,14 +3,16 @@ export default function ProductForm({ handleFormPro, product }) {
     const [title, setTtile] = useState('')
     const [content, setContent] = useState('')
     const [price, setPrice] = useState('')
-    const [category, setCategory]= useState('')
+    const [category, setCategory] = useState('')
     const [stock, setStock] = useState('');
-    const [formState, setFormState] = useState([])
     const [imageAddress, setImageAddress] = useState('')
-    const fileInput = useRef(null);
+    const [file, setFile] = useState(null);
+    const [uploading, setUploading] = useState(false);
 
-    useEffect(()=>{
-        if(product){
+    const s3Url = 'https://user-images-669af664-23f0-47fd-bd77-2745b6a066b7.s3.us-east-2.amazonaws.com'
+
+    useEffect(() => {
+        if (product) {
             setTtile(product.title)
             setContent(product.content)
             setPrice(product.price)
@@ -19,39 +21,45 @@ export default function ProductForm({ handleFormPro, product }) {
             setCategory(product.category)
         }
     })
+    const handleFileChange = (e) => {
+        setFile(e.target.files[0]);
+    };
 
-        const handleProduct = (e) => {
-            e.preventDefault();
-            handleFormPro({ title, content, price, stock, imageAddress, category })
+    const handleProduct = (e) => {
+        e.preventDefault();
+        handleFormPro({ title, content, price, stock, imageAddress, category })
 
+    }
+
+    const handleImageUpload = async (event) => {
+        event.preventDefault()
+        if (!file) return;
+
+        setUploading(true);
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const response = await fetch("/api/upload", {
+                method: "POST",
+                body: formData,
+            });
+
+            const data = await response.json();
+            console.log(data.location)
+            const fileUrl = `${s3Url}/${data.location}`
+            console.log(fileUrl)
+            setUploading(false);
+            setImageAddress(fileUrl)
+            console.log(imageAddress)
+        } catch (error) {
+            console.log(error);
+            setUploading(false);
         }
-
-        const handleImageUpload = (event) => {
-            event.preventDefault()
-            const data = new FormData();
-            data.append('image', fileInput.current.files[0]);
-            const postImage = async () => {
-                try {
-                    const res = await fetch('/api/upload', {
-                        mode: 'cors',
-                        method: 'POST',
-                        body: data,
-                    });
-                    if (!res.ok) throw new Error(res.statusText);
-                    const postResponse = await res.json();
-                    setFormState({ ...formState, image: postResponse.Location });
-                    console.log('postImage: ', postResponse.Location);
-                    setImageAddress(postResponse.Location)
-                    return postResponse.Location;
-                } catch (error) {
-                    console.log(error);
-                }
-            };
-            postImage();
-        }
+    }
 
 
- 
+
     return (
         <>
             <div>
@@ -88,7 +96,7 @@ export default function ProductForm({ handleFormPro, product }) {
                         placeholder="stock"
                         type="text"
                         className="border-blue-50 border-4 p-2 my-4 w-20" />
-                         <input
+                    <input
                         name="category"
                         id="category"
                         value={category}
@@ -98,7 +106,7 @@ export default function ProductForm({ handleFormPro, product }) {
                         className="border-blue-50 border-4 p-2 my-4 w-20" />
                     <label className="form-input col-12  p-1">
                         Add an image:
-                        <input type="file" ref={fileInput} className="form-input p-2" />
+                        <input type="file" onChange={handleFileChange} className="form-input p-2" />
                         <button className="bg-yellow-300 w-40 h-10 rounded-3xl m-4" onClick={handleImageUpload} type="submit">
                             Upload
                         </button>
